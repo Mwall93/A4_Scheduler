@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Estate</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Campuses</div>
+{% endblock %}
+{%block css%}
+    <link href='../time/fullcalendar.min.css' rel='stylesheet' />
+    <link href='../time/fullcalendar.print.min.css' rel='stylesheet' media='print' />
+{%endblock%}
+{% block javascript %}
+    <script src='../time/lib/moment.min.js'></script>
+    <script src='../time/lib/jquery.min.js'></script>
+    <script src='../time/fullcalendar.min.js'></script>
+    <script>
+        $(document).ready(function() {
+
+    $('#calendar').fullCalendar({
+      header: {
+        left: 'prev,next today',
+        center: 'title',
+        right: 'month,agendaWeek,agendaDay,listWeek'
+      },
+      defaultDate: '2019-01-12',
+      navLinks: true, // can click day/week names to navigate views
+      editable: true,
+      eventLimit: true, // allow "more" link when too many events
+      events: [
+          {% for timetable in data.timetables %}
+        {
+          title: {{ timetable.getModule() }}
+          start: {{ timetable.getStart() }}
+          end: {{ timetable.getEnd() }}
+        }
+          {% endfor %}
+        
+      ]
+    });
+
+  });
+    </script>
+{% endblock %}
+{% block pageheader %}Campus List{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Campus List</h2>
+
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_campus">
+        <div class="header">timetable</div>
+        <div class="content">
+
+            <div id='calendar'></div>
+
+        </div>
+            
+        
+    </div><!--  -->
+{% endblock %}
+

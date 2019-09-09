@@ -1,0 +1,16 @@
+{% extends "base_auth.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Error</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Resource Not Found</div>
+{% endblock %}
+
+{% block pageheader %}Resource Not Found{% endblock %}
+
+{% block main %}
+    <p>Sorry! It appears that the resource you are trying to access could not be located. If you believe that this is an error, please contact your system administrator.</p>
+
+    <button type="button" class="ui button" onclick="history.back()">Go Back</a>
+{% endblock %}

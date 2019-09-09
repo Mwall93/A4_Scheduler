@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">People</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Staff</div>
+{% endblock %}
+
+{% block pageheader %}Staff List{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Staff List</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Staff Name</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for staff in data.staff %}
+            <tr onclick="window.location = '{{ url_for('Staff.View', id = staff.getId()) }}'">
+                <td class="fifteen wide">{{ staff.getFirstName() }} {{ staff.getLastName() }}</td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_staff'); })()">
+            <i class="plus icon"></i> Create Staff
+        </button>
+    </div><!-- .right.aligned.text -->
+<!-- 
+    <script>
+        window.config = {
+            url: '{{ url_for('Staff.Create') }}'
+        };
+    </script> -->
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_staff">
+        <div class="header">Create Staff</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_staff" data-form-url="{{ url_for('Staff.Create') }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the first name for the new staff member." data-inverted="" data-position="right center">
+                            First Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="John" name="first_name">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the last name for the new staff member." data-inverted="" data-position="right center">
+                            Last Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="Smith" name="last_name">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the email for the new staff member." data-inverted="" data-position="right center">
+                            Email 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="email" placeholder="JohnSmith@example.com" name="email">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the mobile phone number for the new staff member." data-inverted="" data-position="right center">
+                            Mobile Number 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="07832587996" name="mobile_phone">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select the role for the new staff member." data-inverted="" data-position="right center">
+                            Staff Role 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="role">
+                        {% for role in data.roles %}
+                            <option value="{{ role.getId() }}">{{ role.getDisplayName() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the password for the new staff member." data-inverted="" data-position="right center">
+                            Password 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="password" placeholder="password" name="password">
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_staff') })()">Create</div>
+        </div>
+    </div><!-- .ui.mini.modal#CreateStaffModal -->
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        var form = new Form('create_staff');
+
+        form.onCallback(function(response) {
+            location.reload();
+        });
+    </script>
+{% endblock %}

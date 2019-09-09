@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Estate</div>
+    <div class="divider"> / </div>
+
+    <a href="{{ url_for('Campus.List') }}" class="section">Campuses</a>
+    <div class="divider"> / </div>
+
+    <a class="section" href="{{ url_for('CampusBuilding.List', campus_id=data.campus.getId()) }}" >{{ data.campus.getName() }} Campus </a>
+
+
+    <div class="divider"> / </div>
+
+    <div class="section"> {{ data.building.getName() }} Building</div>
+    <div class="divider"> / </div>
+
+    <div class="active section"> {{ data.room.getIdentifier() }}</div>
+
+{% endblock %}
+
+{% block pageheader %}{{ data.room.getIdentifier() }} {% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">{{ data.room.getIdentifier() }} </h2>
+    <div class="right aligned text">
+            <button class="ui primary button" onclick="(() => { OpenModal('update_room'); })()">Edit Room</button>
+            <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('CampusBuildingRoom.Delete', room_id = data.room.getId(),  campus_id = data.campus.getId(),  building_id = data.building.getId()) }}', '{{ url_for('CampusBuilding.List', campus_id=data.campus.getId()) }}') })()">Delete This Room</button>
+
+        </div><!-- .right.aligned.text -->
+{% endblock %}
+
+{% block modals %}
+
+<div class="ui tiny modal" data-modal="update_room">
+    <div class="header">Update Room</div>
+    <div class="content">
+
+        <form class="ui form" data-form="update_room" data-form-url="{{ url_for('CampusBuildingRoom.Update', building_id=data.building.getId(), campus_id=data.campus.getId(), room_id=data.room.getId()) }}">
+            <div class="field">
+                <label>
+                    <span data-tooltip="Enter the name for the room." data-inverted="" data-position="right center">
+                        Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" value="{{ data.room.getIdentifier() }}" placeholder="E.g. City" name="room_name">
+            </div>
+            <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the floor for the room." data-inverted="" data-position="right center">
+                            Floor 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" value="{{ data.room.getBuildingFloor() }}" placeholder="E.g. 3" name="floor">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the capacity for the room." data-inverted="" data-position="right center">
+                            Capacity 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" value="{{ data.room.getCapacity() }}" placeholder="E.g. 3" name="capacity">
+                </div>
+        </form>
+
+    </div>
+        
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_room') })()">Update</button>
+    </div>
+</div><!-- .ui.mini.modal#UpdateCampusModal -->
+
+
+{% endblock %}

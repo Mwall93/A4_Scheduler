@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Estate</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Campuses</div>
+{% endblock %}
+
+{% block pageheader %}Campus List{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Campus List</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Campus Name</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for campus in data.campuses %}
+            <tr onclick="window.location = '{{ url_for('CampusBuilding.List', campus_id = campus.getId()) }}'">
+                <td class="fifteen wide">{{ campus.getName() }} Campus</td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_campus'); })()">
+            <i class="plus icon"></i> Create Campus
+        </button>
+    </div><!-- .right.aligned.text -->
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_campus">
+        <div class="header">Create Campus</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_campus" data-form-url="{{ url_for('Campus.Create') }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the name for the new campus. Do not include the word 'campus' in the name." data-inverted="" data-position="right center">
+                            Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="E.g. City" name="campus_name">
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_campus') })()">Create</button>
+        </div>
+    </div><!-- .ui.mini.modal#CreateCampusModal -->
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}

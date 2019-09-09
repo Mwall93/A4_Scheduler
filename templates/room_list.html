@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+<!-- List of rooms for a building -->
+
+{% block breadcrumbs %}
+    <div class="section">Estate</div>
+    <div class="divider"> / </div>
+
+    <a href="{{ url_for('Campus.List') }}" class="section">Campuses</a>
+    <div class="divider"> / </div>
+
+    <a class="section" href="{{ url_for('CampusBuilding.List', campus_id=data.campus.getId()) }}" >{{ data.campus.getName() }} Campus </a>
+ 
+    
+    <div class="divider"> / </div>
+
+    <div class="active section"> {{ data.building.getName() }} Building</div>
+
+{% endblock %}
+
+{% block pageheader %} {{ data.building.getName() }} Building {% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Building Rooms</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Rooms</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for room in data.rooms %}
+            <tr onclick="window.location = '{{ url_for('CampusBuildingRoom.View', building_id=data.building.getId(), campus_id=data.campus.getId(), room_id = room.getId()) }}'">
+                <td class="fifteen wide">{{ room.getIdentifier() }} </td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+    <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('CampusBuilding.Delete', campus_id=data.campus.getId(), building_id=data.building.getId() ) }}', '{{ url_for('CampusBuilding.List', campus_id=data.campus.getId()) }}') })()">Delete This Building</button>
+
+    <div class="right aligned text">
+        <button class="ui primary button" onclick="(() => { OpenModal('create_room'); })()">Create Room</button>
+    </div><!-- .right.aligned.text -->
+    <div class="right aligned text">
+            <button class="ui primary button" onclick="(() => { OpenModal('update_building'); })()">
+                Edit Building
+            </button>            
+        </div><!-- .right.aligned.text -->
+    
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_room">
+        <div class="header">Create Room</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_room" data-form-url="{{ url_for('CampusBuildingRoom.Create', campus_id = data.campus.getId(), building_id = data.building.getId() ) }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the room name for the new Room." data-inverted="" data-position="right center">
+                            Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="E.g. MAE204" name="room_name">
+                </div>
+                <div class="field">
+                        <label>
+                            <span data-tooltip="Enter which floor the new room is at." data-inverted="" data-position="right center">
+                                Floor Number 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <input type="number" placeholder="E.g. 3" name="floor">
+                    </div>
+                    <div class="field">
+                            <label>
+                                <span data-tooltip="Enter the capacity for the new room." data-inverted="" data-position="right center">
+                                    Capacity
+                                    <i class="question circle icon"></i>
+                                </span>
+                            </label>
+                            <input type="number" placeholder="E.g. 13" name="capacity">
+                        </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+                <div class="ui cancel button">Cancel</div>
+                <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_room') })()">Create</button>
+            </div>
+            
+    </div><!-- .ui.mini.modal#CreateCampusModal -->
+    <div class="ui tiny modal" data-modal="update_building">
+            <div class="header">Update Building</div>
+            <div class="content">
+    
+                <form class="ui form" data-form="update_building" data-form-url="{{ url_for('CampusBuilding.Update', campus_id = data.campus.getId(), building_id = data.building.getId() ) }}">
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Enter the name for building." data-inverted="" data-position="right center">
+                                Building Name 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <input type="text" placeholder="E.g. MAE204" name="building_name" value="{{ data.building.getName() }}">
+                    </div>
+                    <div class="field">
+                            <label>
+                                <span data-tooltip="Enter the floor count for the building." data-inverted="" data-position="right center">
+                                    Floor Count 
+                                    <i class="question circle icon"></i>
+                                </span>
+                            </label>
+                            <input type="number" placeholder="E.g. 3" name="floor_count" value="{{ data.building.getFloorCount() }}">
+                        </div>
+                </form>
+                <div class="actions">
+                        <div class="ui cancel button">Cancel</div>
+                        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_building') })()">Update</button>
+                    </div>
+                    
+            </div>
+    
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}

@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="active section">Settings</div>
+{% endblock %}
+
+{% block pageheader %}Settings{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Terms</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Term</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for term in data.terms %}
+            <tr onclick="(() => { OpenModal('manage_term{{ term.term.getId() }}') })()">
+                <td class="fifteen wide">Term {{ term.term.getTerm() }} ({{ term.startDate }} - {{ term.endDate }})</td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_term'); })()">
+            <i class="plus icon"></i> Create Term
+        </button>
+    </div><!-- .right.aligned.text -->
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_term">
+        <div class="header">Create Term</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_term" data-form-url="{{ url_for('Settings.CreateTerm') }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the term number." data-inverted="" data-position="right center">
+                            Term 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="term" class="ui fluid dropdown">
+                        <option value="1" selected>Term 1</option>
+                        <option value="2">Term 2</option>
+                        <option value="3">Term 3</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the start date for the new term." data-inverted="" data-position="right center">
+                            Start Date 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="date" name="term_start">
+                </div>
+
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the end date for the new term" data-inverted="" data-position="right center">
+                            End Date 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="date" name="term_end">
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_term') })()">Create</button>
+        </div>
+    </div><!-- .ui.mini.modal#CreateCampusModal -->
+
+    {% for term in data.terms %}
+    <div class="ui tiny modal" data-modal="manage_term{{ term.term.getId() }}">
+        <div class="header">Manage Term</div>
+        <div class="content">
+
+            <form class="ui form" data-form="manage_term{{ term.term.getId() }}" data-form-url="{{ url_for('Settings.UpdateTerm', term_id = term.term.getId()) }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the term number for the term." data-inverted="" data-position="right center">
+                            Term 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="term" class="ui fluid dropdown">
+                        <option value="1"{% if term.term.getTerm() == 1 %} selected{% endif %}>Term 1</option>
+                        <option value="2"{% if term.term.getTerm() == 2 %} selected{% endif %}>Term 2</option>
+                        <option value="3"{% if term.term.getTerm() == 3 %} selected{% endif %}>Term 3</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the start date for the term." data-inverted="" data-position="right center">
+                            Start Date 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="date" name="term_start" value="{{ term.startDateHtml }}">
+                </div>
+
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the end date for the term." data-inverted="" data-position="right center">
+                            End Date 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="date" name="term_end" value="{{ term.endDateHtml }}">
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <button class="ui negative button" style="float: left" onclick="(()=> { DeleteRequest('{{ url_for('Settings.DeleteTerm', term_id = term.term.getId() ) }}', '{{ url_for('Settings.List') }}') })()">Delete</button>
+
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('manage_term{{ term.term.getId() }}') })()">Update</button>
+        </div>
+    </div><!-- .ui.mini.modal#CreateCampusModal -->
+    {% endfor %}
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}

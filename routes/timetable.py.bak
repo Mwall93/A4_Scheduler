@@ -1,0 +1,39 @@
+from flask import request, Blueprint, render_template, url_for, session
+from core import JsonResponse
+from core import Database
+from core import Config
+from core import Security
+from core import Authorization
+
+from model.timetable import timetable as timetableModel
+
+
+@timetable.route('/student/<id>', methods=['GET'])
+def studentview(id):
+    """Returns student timetable"""
+
+    if not Authorization.canAccess(session.get('user'), ('admin')):
+        return render_template('error/no_access.html')
+
+    timetable = timetableModel.timetablestudent(id)
+   
+
+    return render_template("timetable.html", data={
+        "timetable": timetable
+        
+    })
+
+@timetable.route('/staff/<id>', methods=['GET'])
+def teacherview(id):
+    """Returns staff timetable"""
+
+    if not Authorization.canAccess(session.get('user'), ('admin')):
+        return render_template('error/no_access.html')
+
+    timetable = timetableModel.timetablestaff(id)
+   
+
+    return render_template("timetable.html", data={
+        "timetable": timetable
+        
+    })

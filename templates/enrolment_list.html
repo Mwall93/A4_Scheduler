@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">People</div>
+    <div class="divider"> / </div>
+    <a href="{{ url_for('Student.List') }}" class="section">Students</a>
+    <div class="divider"> / </div>
+
+    <div class="active section">{{ data.student.getFirstName() }} {{ data.student.getLastName() }} </div>
+{% endblock %}
+
+{% block pageheader %}{{ data.student.getFirstName() }} {{ data.student.getLastName() }}{% endblock %}
+
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Student Modules</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Module Names</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module in data.enroled_modules %}
+            <tr onclick="window.location = '{{ url_for('Module.View', id = module.getId()) }}'">
+                <td class="fifteen wide">{{ module.getName() }} </td>
+                <td class="one wide right aligned"><button type="button" class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('ModuleEnrolment.Delete', module_id = module.getId(),  student_id = data.student.getId()) }}', '{{ url_for('ModuleEnrolment.List', student_id = data.student.getId()) }}') })()">Delete</button></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <h2 class="ui section header">Student Timetable (current month)</h2>
+
+    <div id="calendar" style="height: 800px;"></div>
+
+    <div class="right aligned text">
+        <button class="ui primary button" onclick="(() => { OpenModal('update_student'); })()">Edit Student</button>
+        <button class="ui primary button" onclick="(() => { OpenModal('enrol_student'); })()">Enrol in Module</button>        
+        <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('Student.Delete', id = data.student.getId()) }}', '{{ url_for('Student.List') }}') })()">Delete Student</button>
+    </div><!-- .right.aligned.text --> 
+
+{% endblock %}
+
+{% block modals %}
+
+<div class="ui tiny modal" data-modal="update_student">
+    <div class="header">Update Student</div>
+    <div class="content">
+
+        <form class="ui form" data-form="update_student" data-form-url="{{ url_for('Student.Update', id=data.student.getId()) }}">
+            
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the first name for the student." data-inverted="" data-position="right center">
+                        First Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="John" name="first_name" value="{{ data.student.getFirstName() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the last name for the student." data-inverted="" data-position="right center">
+                        Last Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="Smith" name="last_name" value="{{ data.student.getLastName() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the email for the student." data-inverted="" data-position="right center">
+                        Email 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="email" placeholder="JohnSmith@example.com" name="email" value="{{ data.student.getEmail() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the mobile phone number for the student." data-inverted="" data-position="right center">
+                        Mobile Number 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="07832587996" name="mobile_phone" value="{{ data.student.getMobile() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the password number for the teacher." data-inverted="" data-position="right center">
+                        Password
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="password" placeholder="password" name="password">
+            </div>
+
+        </form>
+
+    </div>
+        
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_student') })()">Update</button>
+    </div>
+</div><!-- .ui.mini.modal#UpdateCampusModal -->
+
+<div class="ui tiny modal" data-modal="enrol_student">
+        <div class="header">Enrol Student</div>
+        <div class="content">
+    
+            <form class="ui form" data-form="enrol_student" data-form-url="{{ url_for('ModuleEnrolment.Create', student_id=data.student.getId()) }}">
+                
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select a New Module for the Student" data-inverted="" data-position="right center">
+                            Module:
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="module">
+                        {% for module in data.available_modules %}
+                            <option value="{{ module.getId() }}">{{ module.getName() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+            </form>
+    
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('enrol_student') })()">Add Module</button>
+        </div>
+    </div><!-- .ui.mini.modal#UpdateCampusModal -->
+    
+
+{% endblock %}
+
+{% block javascript %}
+    <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+    <script src="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://uicdn.toast.com/tui-calendar/latest/tui-calendar.css" />
+
+    <script type="text/javascript">
+        tui.usageStatistics = false;
+
+        var Calendar = tui.Calendar;
+
+        var calendar = new Calendar('#calendar', {
+            defaultView: 'month',
+            disableDblClick: true,
+            disableClick: true,
+            isReadOnly: true,
+            useDetailPopup: true
+        });
+
+        {% for event in data.timetable %}
+        calendar.createSchedules([{
+            id: '2',
+            calendarId: '1',
+            title: '{{ event.session_type }} with {{ event.staff_first_name }} {{ event.staff_last_name }}',
+            body: 'Module: {{ event.module }}, Location: {{ event.room }} ({{ event.building }}) ({{ event.campus }})',
+            category: 'time',
+            dueDateClass: 'session',
+            start: new Date({{ event.time_from }} * 1000).toISOString(),
+            end: new Date({{ event.time_to }} * 1000).toISOString(),
+            isReadOnly: true    // schedule is read-only
+        }]);
+        {% endfor %}
+
+/*
+                "room": "PAV005",
+                "building": "Povilion",
+                "campus": "Clifton",
+                "time_from": 1538557200,
+                "time_to": 1538560800,
+                "session_type": "Seminar",
+                "staff_first_name": "$Teddothy",
+                "staff_last_name": "Teachington$",
+                "module": "Mobile Platform Applications"
+*/
+
+        // change start day of week(from monday)
+        calendar.setOptions({week: {startDayOfWeek: 1}}, true);
+        calendar.setOptions({month: {startDayOfWeek: 1}}, true);
+        calendar.setOptions({week: {workweek: true}}, true);
+        calendar.setOptions({month: {workweek: true}}, true);
+        calendar.changeView(calendar.getViewName(), true);
+    </script>
+{% endblock %}

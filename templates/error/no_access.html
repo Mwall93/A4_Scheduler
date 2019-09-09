@@ -1,0 +1,16 @@
+{% extends "base_auth.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Error</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">No Access</div>
+{% endblock %}
+
+{% block pageheader %}No Access{% endblock %}
+
+{% block main %}
+    <p>Sorry! It appears that you do not have access to view this page. If you believe that this is an error, please contact your organisation's system administrator.</p>
+    <button type="button" class="ui button" onclick="history.back()">Go Back</a>
+    <a href="{{ url_for('Auth.Logout') }}" class="ui button">Logout</a>
+{% endblock %} 

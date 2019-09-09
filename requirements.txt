@@ -1,0 +1,7 @@
+flask
+raven
+requests
+python-dotenv
+mysqlclient
+uwsgi==2.0.16
+gunicorn

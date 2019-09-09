@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">People</div>
+    <div class="divider"> / </div>
+    <a href="{{ url_for('Staff.List') }}" class="section">Staff</a>
+    <div class="divider"> / </div>
+
+    <div class="active section">{{ data.staff.getFirstName() }} {{ data.staff.getLastName() }} </div>
+{% endblock %}
+
+{% block pageheader %}{{ data.staff.getFirstName() }} {{ data.staff.getLastName() }}{% endblock %}
+
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">{{ data.staff.getFirstName() }}</h2>
+
+    <div class="right aligned text">
+        <button class="ui primary button" onclick="(() => { OpenModal('update_staff'); })()">Edit Staff</button>
+        <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('Staff.Delete', id = data.staff.getId()) }}', '{{ url_for('Staff.List') }}') })()">Delete Staff Member</button>
+    </div><!-- .right.aligned.text -->
+
+{% endblock %}
+
+{% block modals %}
+
+<div class="ui tiny modal" data-modal="update_staff">
+    <div class="header">Update Staff</div>
+    <div class="content">
+
+        <form class="ui form" data-form="update_staff" data-form-url="{{ url_for('Staff.Update', id=data.staff.getId()) }}">
+            
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the first name for the staff member." data-inverted="" data-position="right center">
+                        First Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="John" name="first_name" value="{{ data.staff.getFirstName() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the last name for the staff member." data-inverted="" data-position="right center">
+                        Last Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="Smith" name="last_name" value="{{ data.staff.getLastName() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the email for the staff member." data-inverted="" data-position="right center">
+                        Email 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="email" placeholder="JohnSmith@example.com" name="email" value="{{ data.staff.getEmail() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the mobile phone number for the staff member." data-inverted="" data-position="right center">
+                        Mobile Number 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" placeholder="07832587996" name="mobile_phone" value="{{ data.staff.getMobile() }}">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Update the password number for the staff member." data-inverted="" data-position="right center">
+                        Password
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="password" placeholder="password" name="password">
+            </div>
+            <div class="field">
+                <label>
+                    <span data-tooltip="Select the role for the new staff member." data-inverted="" data-position="right center">
+                        Staff Role 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <select name="role">
+                    {% for role in data.roles %}
+                        <option value="{{ role.getId() }}">{{ role.getDisplayName() }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+        </form>
+
+    </div>
+        
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_staff') })()">Update</button>
+    </div>
+</div><!-- .ui.mini.modal#UpdateCampusModal -->
+
+
+{% endblock %}

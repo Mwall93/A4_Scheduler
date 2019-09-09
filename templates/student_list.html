@@ -1,0 +1,113 @@
+<!-- List of students, new student button, clicking student takes you to module enrolements for a students , view/change student data-->
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">People</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Students</div>
+{% endblock %}
+
+{% block pageheader %}Student List{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Student List</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Student Name</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in data.students %}
+            <tr onclick="window.location = '{{ url_for('ModuleEnrolment.List', student_id = student.getId()) }}'">
+                <td class="fifteen wide">{{ student.getFirstName() }} {{ student.getLastName() }}</td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_student'); })()">
+            <i class="plus icon"></i> Create Student
+        </button>
+    </div><!-- .right.aligned.text -->
+<!-- 
+    <script>
+        window.config = {
+            url: '{{ url_for('Student.Create') }}'
+        };
+    </script> -->
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_student">
+        <div class="header">Create Student</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_student" data-form-url="{{ url_for('Student.Create') }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the first name for the new student." data-inverted="" data-position="right center">
+                            First Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="John" name="first_name">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the last name for the new student." data-inverted="" data-position="right center">
+                            Last Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="Smith" name="last_name">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the email for the new student." data-inverted="" data-position="right center">
+                            Email 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="email" placeholder="JohnSmith@example.com" name="email">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the mobile phone number for the new student." data-inverted="" data-position="right center">
+                            Mobile Number 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" name="mobile_phone">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the password for the new student." data-inverted="" data-position="right center">
+                            Password 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="password" placeholder="password" name="password">
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button"  onclick="(() => { SubmitForm('create_student') })()">Create</div>
+        </div>
+    </div><!-- .ui.mini.modal#CreateStudentModal -->
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}

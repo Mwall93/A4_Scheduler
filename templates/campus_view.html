@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Estate</div>
+    <div class="divider"> / </div>
+
+    <a href="{{ url_for('Campus.List') }}" class="section">Campuses</a>
+    <div class="divider"> / </div>
+
+    <div class="active section">{{ data.campus.getName() }} Campus</div>
+{% endblock %}
+
+{% block pageheader %}{{ data.campus.getName() }} Campus{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">{{ data.campus.getName() }} Campus</h2>
+{% endblock %}
+
+{% block modals %}
+
+<div class="ui tiny modal" data-modal="update_campus">
+    <div class="header">Update Campus</div>
+    <div class="content">
+
+        <form class="ui form" data-form="update_campus" data-form-url="{{ url_for('Campus.Update') }}">
+            <div class="field">
+                <label>
+                    <span data-tooltip="Enter the name for the new campus. Do not include the word 'campus' in the name." data-inverted="" data-position="right center">
+                        Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" value="{{ data.campus.getName() }}" placeholder="E.g. City" name="campus_name">
+            </div>
+        </form>
+
+    </div>
+        
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_campus') })()">Update</button>
+    </div>
+</div><!-- .ui.mini.modal#UpdateCampusModal -->
+
+
+{% endblock %}

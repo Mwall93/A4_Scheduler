@@ -1,0 +1,34 @@
+{% extends "base_auth.html" %}
+
+{% block breadcrumbs %}
+    <div class="section">Authentication</div>
+    <div class="divider"> / </div>
+
+    <div class="active section">Login</div>
+{% endblock %}
+
+{% block pageheader %}Login{% endblock %}
+
+{% block main %}
+    <form method="POST" action="" class="ui form">
+        <div class="field">
+            <label>Email address</label>
+            <div class="ui left icon input">
+                <i class="user icon"></i>
+                <input type="email" placeholder="Email address" name="email" value="john.staff@fabrikam.com">
+            </div>
+        </div><!-- .field -->
+
+        <div class="field">
+            <label>Password</label>
+            <div class="ui left icon input">
+                <i class="lock icon"></i>
+                <input type="password" placeholder="Password" name="password" value="password1">
+            </div>
+        </div><!-- .field -->
+
+        <button type="submit" class="ui primary button">Login</button>
+
+        <a href="{{ url_for('Auth.PasswordReset') }}" style="margin-left: 10px">Forgot Password?</a>
+    </form>
+{% endblock %}

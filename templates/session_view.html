@@ -1,0 +1,288 @@
+<!-- Lists modules: Name + create/delete.  -->
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+
+    <a href="{{ url_for('Module.List') }}" class="section">Modules</a>
+    <div class="divider"> / </div>
+
+    <a href="{{ url_for('Module.View', id = data.module.getId()) }}" class="section">{{ data.module.getName() }}</a>
+    <div class="divider"> / </div>
+
+    <div class="active section">{{ data.session.type.getDisplayName() }} with {{ data.session.staff.getFirstName() }} {{ data.session.staff.getLastName() }}</div>
+{% endblock %}
+
+{% block pageheader %}{{ data.session.type.getDisplayName() }} with {{ data.session.staff.getFirstName() }} {{ data.session.staff.getLastName() }}{% endblock %}
+
+{% block main %}
+    <!-- Room Bookings -->
+    <h2 class="ui section header">Room Bookings</h2>
+
+    <table class="ui very padded{% if data.roomBookings|length > 0 %} selectable{% endif %} table">
+            <thead>
+                <tr>
+                    <th class="fifteen wide">Room</th>
+                    <th class="one wide">&nbsp;</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if data.roomBookings|length > 0 %}
+                {% for booking in data.roomBookings %}
+                <tr>
+                    <td class="fifteen wide">{{ booking.room.getIdentifier() }} from {{ booking.timeFrom }} to {{ booking.timeTo}}</td>
+                    <td class="one wide right aligned"><button type="button" class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('ModuleSession.DeleteBooking', module_id = data.module.getId(),  session_id = data.session.session.getId(), booking_id = booking.booking.getId()) }}', '{{ url_for('ModuleSession.View', module_id = data.module.getId(), session_id = data.session.session.getId()) }}') })()">Delete</button></td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr style="text-align: center">
+                    <td colspan="2">
+                        <div>No sessions have been created for this module.</div><br>
+                        <button class="ui default button" onclick="(() => { OpenModal('book_room_single'); })()">Book Room</button>
+                    </td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="left aligned text">
+        <button class="ui button" onclick="(() => { OpenModal('book_room_recurring'); })()">Book Room Recurring</button>
+    </div>
+    <div class="right aligned text">
+        <button class="ui primary button" onclick="(() => { OpenModal('book_room_single'); })()">Book Room</button>
+    </div><!-- .right.aligned.text -->
+
+    <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('ModuleSession.Delete', module_id = data.module.getId(),  session_id = data.session.session.getId()) }}', '{{ url_for('Module.View', id=data.module.getId()) }}') })()">Delete Session</button>
+{% endblock %}
+
+{% block modals %}
+<div class="ui tiny modal" data-modal="book_room_single">
+        <div class="header">Book Room</div>
+        <div class="content">
+
+            <form class="ui form" data-form="book_room_single" data-form-url="{{ url_for('ModuleSession.CreateBooking', module_id = data.module.getId(), session_id = data.session.session.getId() ) }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select the campus for the new session." data-inverted="" data-position="right center">
+                            Campus 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="campus" class="ui fluid dropdown" id="campusSelect">
+                    {% for campus in data.campuses %}
+                        <option value="{{ campus.campus.getId() }}">{{ campus.campus.getName() }}</option>
+                    {% endfor %}
+                    </select>
+                </div>
+                <div class="campus-building field">
+                    <label>
+                        <span data-tooltip="Select the buidling for the new session." data-inverted="" data-position="right center">
+                            Building 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="building" class="ui fluid dropdown" id="buildingSelect">
+
+                    </select>
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select the duration for the new session." data-inverted="" data-position="right center">
+                            Duration
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="duration" class="ui fluid dropdown">
+                        <option value="1">1 hour</option>
+                        <option value="2">2 hours</option>
+                        <option value="3">3 hours</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select the Day for the new session" data-inverted="" data-position="right center">
+                            Day 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="date" placeholder="Day" name="day">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Select the hour for the new session." data-inverted="" data-position="right center">
+                            Hour 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="hour" class="ui fluid dropdown">
+                        <option value="9">9 AM</option>
+                        <option value="10">10 AM</option>
+                        <option value="11">11 AM</option>
+                        <option value="12">12 PM</option>
+                        <option value="13">1 PM</option>
+                        <option value="14">2 PM</option>
+                        <option value="15">3 PM</option>
+                        <option value="16">4 PM</option>
+                        <option value="17">5 PM</option>
+                    </select>
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('book_room_single') })()">Create</div>
+        </div>
+    </div><!-- .ui.mini.modal#CreateStaffModal -->
+
+    <div class="ui tiny modal" data-modal="book_room_recurring">
+            <div class="header">Book Room</div>
+            <div class="content">
+    
+                <form class="ui form" data-form="book_room_recurring" data-form-url="{{ url_for('ModuleSession.CreateRecurringBooking', module_id = data.module.getId(), session_id = data.session.session.getId() ) }}">
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Select the campus for the new session." data-inverted="" data-position="right center">
+                                Campus 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="campus" class="ui fluid dropdown" id="campusSelect2">
+                        {% for campus in data.campuses %}
+                            <option value="{{ campus.campus.getId() }}">{{ campus.campus.getName() }}</option>
+                        {% endfor %}
+                        </select>
+                    </div>
+                    <div class="campus-building2 field">
+                        <label>
+                            <span data-tooltip="Select the building for the new session." data-inverted="" data-position="right center">
+                                Building 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="building" class="ui fluid dropdown" id="buildingSelect2">
+    
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Select the duration for the new session." data-inverted="" data-position="right center">
+                                Duration
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="duration" class="ui fluid dropdown">
+                            <option value="1">1 hour</option>
+                            <option value="2">2 hours</option>
+                            <option value="3">3 hours</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Select the Day of the week for the new session." data-inverted="" data-position="right center">
+                                Day  of the week
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="day" class="ui fluid dropdown">
+                            <option value="1">Monday</option>
+                            <option value="2">Tuesday</option>
+                            <option value="3">Wednesday</option>
+                            <option value="4">Thursday</option>
+                            <option value="5">Friday</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Select the frequency for the new session." data-inverted="" data-position="right center">
+                                Frequency 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="frequency" class="ui fluid dropdown">
+                            <option value="1">Every week</option>
+                            <option value="2">Every 2 weeks</option>
+                            <option value="3">Every 3 weeks</option>
+                            <option value="4">Every 4 weeks</option>
+                            <option value="5">Every 5 weeks</option>
+                            <option value="6">Every 6 weeks</option>
+                            <option value="7">Every 7 weeks</option>
+                            <option value="8">Every 8 weeks</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label>
+                            <span data-tooltip="Select the Term for the new session." data-inverted="" data-position="right center">
+                                Term 
+                                <i class="question circle icon"></i>
+                            </span>
+                        </label>
+                        <select name="term" class="ui fluid dropdown">
+                            {% for term in data.terms %}
+                            <option value="{{ term.term.getId() }}">Term {{ term.term.getTerm() }} ({{ term.startDate }} - {{ term.endDate }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </form>
+    
+            </div>
+                
+            <div class="actions">
+                <div class="ui cancel button">Cancel</div>
+                <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('book_room_recurring') })()">Create</div>
+            </div>
+        </div><!-- .ui.mini.modal#CreateStaffModal -->
+{% endblock %}
+
+{% block javascript %}
+    <script>
+        var dropdown_data = {
+        {% for campus in data.campuses %}
+            "{{ campus.campus.getId() }}": [
+                {% for building in campus.buildings %}
+                    {
+                        id: "{{ building.getId() }}",
+                        name: "{{ building.getName() }}"
+                    },
+                {% endfor %}
+            ],
+        {% endfor %}
+        };
+
+        function fillBuildingSelect(campus_id) {
+            html = '';
+
+            var buildings = dropdown_data[campus_id];
+
+            buildings.forEach(building => {
+                html += `<option value="${building.id}">${building.name}</option>`;
+            });
+
+            $('#buildingSelect').html(html);
+        }
+
+        function fillBuildingSelect2(campus_id) {
+            html = '';
+
+            var buildings = dropdown_data[campus_id];
+
+            buildings.forEach(building => {
+                html += `<option value="${building.id}">${building.name}</option>`;
+            });
+
+            $('#buildingSelect2').html(html);
+        }
+
+        (() => {
+            fillBuildingSelect( $('#campusSelect').val() );
+            $('#campusSelect').on('change', () => {
+                fillBuildingSelect( $('#campusSelect').val() );
+            });
+
+            fillBuildingSelect2( $('#campusSelect2').val() );
+            $('#campusSelect2').on('change', () => {
+                fillBuildingSelect( $('#campusSelect2').val() );
+            });
+        })();
+    </script>
+{% endblock %}

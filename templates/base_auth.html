@@ -1,0 +1,72 @@
+<!--
+    ___   __ __ _____      __             __      __         
+   /   | / // // ___/_____/ /_  ___  ____/ /_  __/ /__  _____
+  / /| |/ // /_\__ \/ ___/ __ \/ _ \/ __  / / / / / _ \/ ___/
+ / ___ /__  __/__/ / /__/ / / /  __/ /_/ / /_/ / /  __/ /    
+/_/  |_| /_/ /____/\___/_/ /_/\___/\__,_/\__,_/_/\___/_/     
+                                                             
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>A4 Scheduler</title>
+
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/app.css">
+</head>
+<body>
+    <div id="page">
+
+        <!-- Navigation Menu -->
+        <div class="ui inverted top fixed menu" style="height: 60px">
+            <div class="item">
+                A4 Scheduler
+            </div>
+        </div><!-- /Navigation Menu -->
+
+
+        <!-- Page Heading -->
+        <div class="ui page heading">
+            <div class="ui container">
+                <div class="ui one column grid">
+                    <div class="column">
+
+                        <!-- Breadcrumb Navigation -->
+                        <div class="ui breadcrumb">
+                            {% block breadcrumbs %}{% endblock %}
+                        </div>
+                            
+                        <!-- Page Header -->
+                        <h1 class="ui page header">{% block pageheader %}{% endblock %}</h1>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Page Heading -->
+
+        <div class="ui container" style="padding-top: 19rem;padding-bottom: 3rem;">
+            <div class="ui one column grid">
+                <div class="column">
+
+                    {% block main %}{% endblock %}
+
+                </div><!-- .column -->
+            </div><!-- .ui.one.column.grid -->
+        </div><!-- .ui.container -->
+
+    </div><!-- #page -->
+
+    {% block modals %}{% endblock %}
+
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="https://semantic-ui.com/javascript/library/tablesort.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <script type="text/javascript" src="/static/app.js"></script>
+
+    {% block javascript %}{% endblock %}
+</body>
+</html>

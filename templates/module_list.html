@@ -1,0 +1,85 @@
+<!-- Lists modules: Name + create/delete.  -->
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+
+    <div class="active section">Modules</div>
+{% endblock %}
+
+{% block pageheader %}Module List{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Module List</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Module Name</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for module in data.modules %}
+            <tr onclick="window.location = '{{ url_for('Module.View', id = module.getId()) }}'">
+                <td class="fifteen wide">{{ module.getName() }} </td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_module'); })()">
+            <i class="plus icon"></i> Create Module
+        </button>
+    </div><!-- .right.aligned.text -->
+
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_module">
+        <div class="header">Create Module</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_module" data-form-url="{{ url_for('Module.Create') }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the name for the new module." data-inverted="" data-position="right center">
+                            Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="E.g. Advanced Software Engineering" name="module_name">
+                </div>
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter select the module leader." data-inverted="" data-position="right center">
+                            Module Leader 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <select name="leader">
+                        {% for teacher in data.teachers %}
+                            <option value="{{ teacher.getId() }}">{{ teacher.getFirstName() }} {{ teacher.getLastName() }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_module') })()">Create</button>
+        </div>
+    </div><!-- .ui.mini.modal#CreateModuleModal -->
+
+ 
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}

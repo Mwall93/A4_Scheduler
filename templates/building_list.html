@@ -1,0 +1,118 @@
+<!-- Show building info. Allow editing of info e.g. building name, room, floors. Link to room list  -->
+
+{% extends "base.html" %}
+
+{% block breadcrumbs %}
+<div class="section">Estate</div>
+<div class="divider"> / </div>
+
+<a href="{{ url_for('Campus.List') }}" class="section">Campuses</a>
+<div class="divider"> / </div>
+
+<div class="active section">{{ data.campus.getName() }} Campus</div>
+{% endblock %}
+
+{% block pageheader %}{{ data.campus.getName() }} Campus{% endblock %}
+
+{% block main %}
+    <!-- Section Header-->
+    <h2 class="ui section header">Building List</h2>
+
+    <table class="ui very padded selectable table">
+        <thead>
+            <tr>
+                <th class="fifteen wide">Buildings</th>
+                <th class="one wide">&nbsp;</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for building in data.buildings %}
+            <tr onclick="window.location = '{{ url_for('CampusBuildingRoom.List', campus_id = data.campus.getId(), building_id = building.getId()) }}'">
+                <td class="fifteen wide">{{ building.getName() }} Building</td>
+                <td class="one wide right aligned"><i class="chevron right icon"></i></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table><!-- .ui.very.padded.selectable.table -->
+
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('create_building'); })()">
+            <i class="plus icon"></i> Create Building
+        </button>
+    </div><!-- .right.aligned.text -->
+    <div class="right aligned text">
+        <button class="ui labeled primary icon button" onclick="(() => { OpenModal('update_campus'); })()">
+            <i class="plus icon"></i> Edit Campus
+        </button>
+    </div><!-- .right.aligned.text -->
+
+    <button class="ui button" onclick="(()=> { DeleteRequest('{{ url_for('Campus.Delete', id = data.campus.getId()) }}', '{{ url_for('Campus.List') }}') })()">Delete This Campus</button>
+{% endblock %}
+
+{% block modals %}
+    <div class="ui tiny modal" data-modal="create_building">
+        <div class="header">Create Building</div>
+        <div class="content">
+
+            <form class="ui form" data-form="create_building" data-form-url="{{ url_for('CampusBuilding.Create', campus_id = data.campus.getId()) }}">
+                <div class="field">
+                    <label>
+                        <span data-tooltip="Enter the name for the new building. Do not include the word 'building' in the name." data-inverted="" data-position="right center">
+                            Name 
+                            <i class="question circle icon"></i>
+                        </span>
+                    </label>
+                    <input type="text" placeholder="E.g. Erasmus Darwin" name="building_name">
+                </div>
+                <div class="field">
+                        <label>
+                            <span>
+                                Floor Count 
+                            </span>
+                        </label>
+                        <input type="number" placeholder="E.g. 2" name="floor_count">
+                    </div>
+            </form>
+
+        </div>
+            
+        <div class="actions">
+            <div class="ui cancel button">Cancel</div>
+            <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('create_building') })()">Create</button>
+        </div>
+    </div><!-- .ui.mini.modal#CreateCampusModal -->
+
+
+<div class="ui tiny modal" data-modal="update_campus">
+    <div class="header">Update Campus</div>
+    <div class="content">
+
+        <form class="ui form" data-form="update_campus" data-form-url="{{ url_for('Campus.Update', id = data.campus.getId()) }}">
+            <div class="field">
+                <label>
+                    <span data-tooltip="Enter the name for the new campus. Do not include the word 'campus' in the name." data-inverted="" data-position="right center">
+                        Name 
+                        <i class="question circle icon"></i>
+                    </span>
+                </label>
+                <input type="text" value="{{ data.campus.getName() }}" placeholder="E.g. City" name="campus_name">
+            </div>
+        </form>
+
+    </div>
+        
+    <div class="actions">
+        <div class="ui cancel button">Cancel</div>
+        <button type="button" class="ui approve positive button" onclick="(() => { SubmitForm('update_campus') })()">Update</button>
+    </div>
+
+</div><!-- .ui.mini.modal#UpdateCampusModal -->
+
+
+{% endblock %}
+
+{% block javascript %}
+    <script>
+
+    </script>
+{% endblock %}
