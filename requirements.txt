@@ -3,5 +3,5 @@ raven
 requests
 python-dotenv
 mysqlclient
-uwsgi==2.0.16
+uwsgi==2.0.22
 gunicorn
